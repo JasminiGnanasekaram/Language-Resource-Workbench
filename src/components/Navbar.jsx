@@ -4,7 +4,7 @@ import { NavLink } from "react-router-dom";
 const linkStyle = ({ isActive }) => ({
   padding: "8px 10px",
   borderRadius: "10px",
-  background: isActive ? "#111827" : "transparent",
+  background: isActive ? "#010305" : "transparent",
   color: isActive ? "white" : "#111",
 });
 
@@ -16,14 +16,18 @@ export default function Navbar() {
           <div style={{ width: 34, height: 34, borderRadius: 10, background: "#2563eb" }} />
           <div>
             <div style={{ fontWeight: 800 }}>Language Resource WorkBench</div>
-            <div className="muted">Upload → Clean → NLP → Search → Export</div>
+            <div className="muted"></div>
           </div>
         </div>
 
         <div style={{ display: "flex", gap: 8 }}>
           <NavLink to="/" style={linkStyle}>Dashboard</NavLink>
+          <NavLink to="home" style={linkStyle}>Home</NavLink>
           <NavLink to="/upload" style={linkStyle}>Upload</NavLink>
           <NavLink to="/search" style={linkStyle}>Search</NavLink>
+          <NavLink to="/login" style={linkStyle}>Login</NavLink>
+
+          
         </div>
       </div>
     </div>

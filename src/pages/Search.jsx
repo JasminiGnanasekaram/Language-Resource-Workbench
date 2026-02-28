@@ -22,7 +22,6 @@ export default function Search() {
 
   useEffect(() => {
     run();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const columns = [
@@ -33,57 +32,197 @@ export default function Search() {
       key: "actions",
       header: "Actions",
       render: (r) => (
-        <div style={{ display: "flex", gap: 8 }}>
-          <Link className="btn" to={`/docs/${r.id}`}>View</Link>
-        </div>
+        <Link to={`/docs/${r.id}`} style={styles.viewBtn}>
+          View
+        </Link>
       ),
     },
   ];
 
   return (
-    <div className="card">
-      <h1 className="h1">Search & Results</h1>
-      <div className="muted" style={{ marginTop: 6 }}>
-        Search + filters (language/source) like your wireframe. 
+    <div style={styles.container}>
+      <div style={styles.card}>
+        <h1 style={styles.title}>Search & Results</h1>
+        <p style={styles.subtitle}>
+          Search documents with filters like Language & Source
+        </p>
+
+        {/* 🔹 ROW 1 */}
+        <div style={styles.filterRow}>
+          <div style={styles.field}>
+            <label style={styles.label}>Search</label>
+            <input
+              type="text"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="Search..."
+              style={styles.input}
+            />
+          </div>
+
+          <div style={styles.field}>
+            <label style={styles.label}>Language</label>
+            <select
+              value={language}
+              onChange={(e) => setLanguage(e.target.value)}
+              style={styles.select}
+            >
+              <option value="">All</option>
+              <option value="Tamil">Tamil</option>
+              <option value="Sinhala">Sinhala</option>
+              <option value="English">English</option>
+              <option value="Mixed">Mixed</option>
+            </select>
+          </div>
+        </div>
+
+        {/* 🔹 ROW 2 */}
+        <div style={styles.filterRow}>
+          <div style={styles.field}>
+            <label style={styles.label}>Source</label>
+            <input
+              value={source}
+              onChange={(e) => setSource(e.target.value)}
+              placeholder="ex: Manual / Newspaper"
+              style={styles.input}
+            />
+          </div>
+
+          <div style={styles.actions}>
+            <button
+              onClick={run}
+              disabled={loading}
+              style={{ ...styles.btn, ...styles.primaryBtn }}
+            >
+              {loading ? "Searching..." : "Search"}
+            </button>
+
+            <button
+              onClick={() => {
+                setQuery("");
+                setLanguage("");
+                setSource("");
+              }}
+              style={{ ...styles.btn, ...styles.secondaryBtn }}
+            >
+              Clear
+            </button>
+          </div>
+        </div>
+
+        {/* 🔹 TABLE */}
+        <div style={styles.tableWrapper}>
+          <Table columns={columns} rows={rows} />
+        </div>
       </div>
-
-      <hr />
-
-      <div className="row">
-        <div>
-          <div className="muted">Search</div>
-          <input className="input" value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search..." />
-        </div>
-        <div>
-          <div className="muted">Language</div>
-          <select value={language} onChange={(e) => setLanguage(e.target.value)}>
-            <option value="">All</option>
-            <option value="Tamil">Tamil</option>
-            <option value="Sinhala">Sinhala</option>
-            <option value="English">English</option>
-            <option value="Mixed">Mixed</option>
-          </select>
-        </div>
-      </div>
-
-      <div className="row" style={{ marginTop: 10 }}>
-        <div>
-          <div className="muted">Source</div>
-          <input className="input" value={source} onChange={(e) => setSource(e.target.value)} placeholder="ex: Manual / Newspaper" />
-        </div>
-        <div style={{ display: "flex", gap: 10, alignItems: "end" }}>
-          <button className="btn primary" onClick={run} disabled={loading}>
-            {loading ? "Searching..." : "Search"}
-          </button>
-          <button className="btn" onClick={() => { setQuery(""); setLanguage(""); setSource(""); }}>
-            Clear
-          </button>
-        </div>
-      </div>
-
-      <hr />
-
-      <Table columns={columns} rows={rows} />
     </div>
   );
 }
+
+/* 🎨 STYLES */
+const styles = {
+  container: {
+    padding: "30px",
+    minHeight: "100vh",
+    background: "#f7f9fc",
+    display: "flex",
+    justifyContent: "center",
+  },
+
+  card: {
+    width: "100%",
+    maxWidth: "1000px",
+    background: "#fff",
+    borderRadius: "16px",
+    padding: "40px",
+    boxShadow: "0 15px 35px rgba(0,0,0,0.08)",
+  },
+
+  title: {
+    fontSize: "28px",
+    fontWeight: "700",
+    color: "#1e3a8a",
+  },
+
+  subtitle: {
+    fontSize: "15px",
+    color: "#6b7280",
+    marginBottom: "30px",
+  },
+
+  filterRow: {
+    display: "flex",
+    gap: "20px",
+    marginBottom: "20px",
+    flexWrap: "wrap",
+  },
+
+  field: {
+    display: "flex",
+    flexDirection: "column",
+    flex: 1,
+    minWidth: "220px",
+  },
+
+  label: {
+    fontSize: "13px",
+    fontWeight: "600",
+    color: "#4b5563",
+    marginBottom: "6px",
+  },
+
+  input: {
+    padding: "12px 14px",
+    borderRadius: "10px",
+    border: "1px solid #d1d5db",
+    fontSize: "14px",
+  },
+
+  select: {
+    padding: "12px 14px",
+    borderRadius: "10px",
+    border: "1px solid #d1d5db",
+    fontSize: "14px",
+    cursor: "pointer",
+  },
+
+  actions: {
+    display: "flex",
+    gap: "12px",
+    alignItems: "flex-end",
+  },
+
+  btn: {
+    padding: "12px 24px",
+    borderRadius: "10px",
+    fontWeight: "600",
+    cursor: "pointer",
+    border: "none",
+  },
+
+  primaryBtn: {
+    background: "#4f46e5",
+    color: "#fff",
+  },
+
+  secondaryBtn: {
+    background: "#fff",
+    color: "#4f46e5",
+    border: "2px solid #4f46e5",
+  },
+
+  tableWrapper: {
+    marginTop: "10px",
+    overflowX: "auto",
+  },
+
+  viewBtn: {
+    background: "#4f46e5",
+    color: "#fff",
+    padding: "6px 12px",
+    borderRadius: "8px",
+    textDecoration: "none",
+    fontSize: "13px",
+    fontWeight: "600",
+  },
+};

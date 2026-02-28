@@ -57,108 +57,289 @@ export default function Upload() {
   }
 
   return (
-    <div className="card">
-      <h1 className="h1">Upload Data</h1>
-      <div className="muted" style={{ marginTop: 6 }}>
-        Text / PDF / Image / Audio / URL upload + metadata & license.
-      </div>
+    <div style={styles.container}>
+      <div style={styles.card}>
+        <h1 style={styles.title}>Upload Data</h1>
+        <p style={styles.subtitle}>
+          Upload Text / PDF / Image / Audio / URL with metadata and license
+        </p>
 
-      <hr />
+        <form onSubmit={onSubmit} style={styles.form}>
+          {/* Input Type & Language */}
+          <div style={styles.row}>
+            <div style={styles.field}>
+              <label style={styles.label}>Input Type</label>
+              <select
+                value={inputType}
+                onChange={(e) => {
+                  setInputType(e.target.value);
+                  setForm((p) => ({ ...p, text: "", url: "", file: null }));
+                }}
+                style={styles.select}
+              >
+                <option value="text">Text</option>
+                <option value="pdf">PDF</option>
+                <option value="image">Image (OCR)</option>
+                <option value="audio">Audio (STT)</option>
+                <option value="url">URL</option>
+              </select>
+            </div>
 
-      <form onSubmit={onSubmit} className="grid" style={{ gap: 12 }}>
-        <div className="row">
-          <div>
-            <div className="muted">Input Type</div>
-            <select
-              value={inputType}
-              onChange={(e) => {
-                setInputType(e.target.value);
-                setForm((p) => ({ ...p, text: "", url: "", file: null }));
-              }}
+            <div style={styles.field}>
+              <label style={styles.label}>Language</label>
+              <select
+                value={form.language}
+                onChange={(e) => setForm((p) => ({ ...p, language: e.target.value }))}
+                style={styles.select}
+              >
+                <option>Tamil</option>
+                <option>Sinhala</option>
+                <option>English</option>
+                <option>Mixed</option>
+              </select>
+            </div>
+          </div>
+
+          {/* Source & License */}
+          <div style={styles.row}>
+            <div style={styles.field}>
+              <label style={styles.label}>Source</label>
+              <input
+                type="text"
+                placeholder="e.g., Newspaper / Manual / Website"
+                value={form.source}
+                onChange={(e) => setForm((p) => ({ ...p, source: e.target.value }))}
+                style={styles.input}
+              />
+            </div>
+
+            <div style={styles.field}>
+              <label style={styles.label}>License</label>
+              <select
+                value={form.license}
+                onChange={(e) => setForm((p) => ({ ...p, license: e.target.value }))}
+                style={styles.select}
+              >
+                <option>Public Domain</option>
+                <option>CC BY</option>
+                <option>CC BY-SA</option>
+                <option>CC BY-NC</option>
+                <option>All Rights Reserved</option>
+              </select>
+            </div>
+          </div>
+
+          {/* Title & Domain */}
+          <div style={styles.row}>
+            <div style={styles.field}>
+              <label style={styles.label}>Title (Optional)</label>
+              <input
+                value={form.title}
+                onChange={(e) => setForm((p) => ({ ...p, title: e.target.value }))}
+                style={styles.input}
+              />
+            </div>
+
+            <div style={styles.field}>
+              <label style={styles.label}>Domain (Optional)</label>
+              <input
+                value={form.domain}
+                onChange={(e) => setForm((p) => ({ ...p, domain: e.target.value }))}
+                placeholder="e.g., News / Education / Social"
+                style={styles.input}
+              />
+            </div>
+          </div>
+
+          {/* Dynamic Input Area */}
+          {inputType === "text" && (
+            <div style={styles.fieldFull}>
+              <label style={styles.label}>Enter Text</label>
+              <textarea
+                value={form.text}
+                onChange={(e) => setForm((p) => ({ ...p, text: e.target.value }))}
+                placeholder="Paste your text here..."
+                style={styles.textarea}
+              />
+            </div>
+          )}
+
+          {inputType === "url" && (
+            <div style={styles.fieldFull}>
+              <label style={styles.label}>Enter URL</label>
+              <input
+                type="url"
+                value={form.url}
+                onChange={(e) => setForm((p) => ({ ...p, url: e.target.value }))}
+                placeholder="https://..."
+                style={styles.input}
+              />
+            </div>
+          )}
+
+          {["pdf", "image", "audio"].includes(inputType) && (
+            <div style={styles.fieldFull}>
+              <label style={styles.label}>Choose File</label>
+              <input
+                type="file"
+                accept={accept}
+                onChange={(e) => setForm((p) => ({ ...p, file: e.target.files?.[0] || null }))}
+                style={styles.fileInput}
+              />
+              {form.file && <p style={styles.fileName}>Selected: {form.file.name}</p>}
+            </div>
+          )}
+
+          {/* Buttons */}
+          <div style={styles.actions}>
+            <button
+              type="submit"
+              disabled={!canSubmit || loading}
+              style={{ ...styles.btn, ...styles.primaryBtn }}
             >
-              <option value="text">Text</option>
-              <option value="pdf">PDF</option>
-              <option value="image">Image (OCR)</option>
-              <option value="audio">Audio (STT)</option>
-              <option value="url">URL</option>
-            </select>
+              {loading ? "Uploading..." : "Upload & Process"}
+            </button>
+            <button
+              type="button"
+              onClick={() => nav("/search")}
+              style={{ ...styles.btn, ...styles.secondaryBtn }}
+            >
+              Go to Search
+            </button>
           </div>
-
-          <div>
-            <div className="muted">Language</div>
-            <select value={form.language} onChange={(e) => setForm((p) => ({ ...p, language: e.target.value }))}>
-              <option>Tamil</option>
-              <option>Sinhala</option>
-              <option>English</option>
-              <option>Mixed</option>
-            </select>
-          </div>
-        </div>
-
-        <div className="row">
-          <div>
-            <div className="muted">Source</div>
-            <input className="input" value={form.source} onChange={(e) => setForm((p) => ({ ...p, source: e.target.value }))} placeholder="ex: Newspaper / Manual / Website" />
-          </div>
-          <div>
-            <div className="muted">License</div>
-            <select value={form.license} onChange={(e) => setForm((p) => ({ ...p, license: e.target.value }))}>
-              <option>Public Domain</option>
-              <option>CC BY</option>
-              <option>CC BY-SA</option>
-              <option>CC BY-NC</option>
-              <option>All Rights Reserved</option>
-            </select>
-          </div>
-        </div>
-
-        <div className="row">
-          <div>
-            <div className="muted">Title (optional)</div>
-            <input className="input" value={form.title} onChange={(e) => setForm((p) => ({ ...p, title: e.target.value }))} />
-          </div>
-          <div>
-            <div className="muted">Domain (optional)</div>
-            <input className="input" value={form.domain} onChange={(e) => setForm((p) => ({ ...p, domain: e.target.value }))} placeholder="ex: News / Education / Social" />
-          </div>
-        </div>
-
-        {/* Input area */}
-        {inputType === "text" ? (
-          <div>
-            <div className="muted">Enter Text</div>
-            <textarea value={form.text} onChange={(e) => setForm((p) => ({ ...p, text: e.target.value }))} placeholder="Paste text here..." />
-          </div>
-        ) : null}
-
-        {inputType === "url" ? (
-          <div>
-            <div className="muted">Enter URL</div>
-            <input className="input" value={form.url} onChange={(e) => setForm((p) => ({ ...p, url: e.target.value }))} placeholder="https://..." />
-          </div>
-        ) : null}
-
-        {["pdf", "image", "audio"].includes(inputType) ? (
-          <div>
-            <div className="muted">Choose File</div>
-            <input
-              type="file"
-              accept={accept}
-              onChange={(e) => setForm((p) => ({ ...p, file: e.target.files?.[0] || null }))}
-            />
-            {form.file ? <div className="muted" style={{ marginTop: 6 }}>Selected: {form.file.name}</div> : null}
-          </div>
-        ) : null}
-
-        <div style={{ display: "flex", gap: 10 }}>
-          <button type="submit" className={`btn primary`} disabled={!canSubmit || loading}>
-            {loading ? "Uploading..." : "Upload & Process"}
-          </button>
-          <button type="button" className="btn" onClick={() => nav("/search")}>
-            Go to Search
-          </button>
-        </div>
-      </form>
+        </form>
+      </div>
     </div>
   );
 }
+
+/* 🎨 STYLES */
+const styles = {
+  container: {
+    padding: "30px",
+    minHeight: "100vh",
+    background: "#f7f9fc",
+    fontFamily: "'Inter', sans-serif",
+    display: "flex",
+    justifyContent: "center",
+  },
+
+  card: {
+    width: "100%",
+    maxWidth: "900px",
+    background: "#fff",
+    borderRadius: "16px",
+    padding: "40px",
+    boxShadow: "0 15px 35px rgba(0,0,0,0.08)",
+  },
+
+  title: {
+    fontSize: "28px",
+    fontWeight: "700",
+    marginBottom: "8px",
+    color: "#1e3a8a",
+  },
+
+  subtitle: {
+    fontSize: "15px",
+    color: "#6b7280",
+    marginBottom: "25px",
+  },
+
+  form: {
+    display: "flex",
+    flexDirection: "column",
+    gap: "20px",
+  },
+
+  row: {
+    display: "flex",
+    gap: "20px",
+    flexWrap: "wrap",
+  },
+
+  field: {
+    flex: 1,
+    display: "flex",
+    flexDirection: "column",
+  },
+
+  fieldFull: {
+    display: "flex",
+    flexDirection: "column",
+  },
+
+  label: {
+    fontSize: "13px",
+    fontWeight: "600",
+    marginBottom: "6px",
+    color: "#4b5563",
+  },
+
+  input: {
+    padding: "12px 14px",
+    borderRadius: "10px",
+    border: "1px solid #d1d5db",
+    fontSize: "14px",
+    outline: "none",
+    transition: "0.3s",
+  },
+
+  select: {
+    padding: "12px 14px",
+    borderRadius: "10px",
+    border: "1px solid #d1d5db",
+    fontSize: "14px",
+    outline: "none",
+    cursor: "pointer",
+  },
+
+  textarea: {
+    padding: "14px",
+    borderRadius: "12px",
+    border: "1px solid #d1d5db",
+    fontSize: "14px",
+    minHeight: "120px",
+    outline: "none",
+    resize: "vertical",
+  },
+
+  fileInput: {
+    fontSize: "14px",
+  },
+
+  fileName: {
+    marginTop: "6px",
+    fontSize: "13px",
+    color: "#6b7280",
+  },
+
+  actions: {
+    display: "flex",
+    gap: "15px",
+    marginTop: "10px",
+    flexWrap: "wrap",
+  },
+
+  btn: {
+    padding: "14px 28px",
+    borderRadius: "12px",
+    fontWeight: "700",
+    fontSize: "14px",
+    cursor: "pointer",
+    transition: "0.3s",
+    border: "none",
+  },
+
+  primaryBtn: {
+    background: "#4f46e5",
+    color: "#fff",
+    boxShadow: "0 5px 15px rgba(79,70,229,0.3)",
+  },
+
+  secondaryBtn: {
+    background: "#fff",
+    color: "#4f46e5",
+    border: "2px solid #4f46e5",
+  },
+};

@@ -7,6 +7,7 @@ import Upload from "./pages/Upload.jsx";
 import Search from "./pages/Search.jsx";
 import Home from "./pages/Home.jsx";
 import Login from "./pages/Login.jsx";
+import User from "./pages/User"; 
 import Register from "./pages/Register.jsx";
 import DocumentView from "./pages/DocumentView.jsx";
 import Processing from "./pages/Processing.jsx";
@@ -31,7 +32,7 @@ export default function App() {
         <Route path="/" element={<Dashboard />} />  {/* accessible before login */}
         <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
         <Route path="/register" element={<PublicRoute><Register /></PublicRoute>} />
-
+        <Route path="/user" element={<User />} /> 
         {/* Protected pages */}
         <Route path="/home" element={<PrivateRoute><Home /></PrivateRoute>} />
         <Route path="/upload" element={<PrivateRoute><Upload /></PrivateRoute>} />

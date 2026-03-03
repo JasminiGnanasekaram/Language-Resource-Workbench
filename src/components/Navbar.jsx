@@ -64,7 +64,7 @@ export default function Navbar() {
               <NavLink to="/home" style={linkStyle}>Home</NavLink>
               <NavLink to="/upload" style={linkStyle}>Upload</NavLink>
               <NavLink to="/search" style={linkStyle}>Search</NavLink>
-              <div style={styles.userBadge}>👤 User</div>
+              <NavLink to="/user" style={linkStyle}>👤 User</NavLink>
               <button onClick={handleLogout} style={styles.logoutBtn}>Logout</button>
             </>
           )}
